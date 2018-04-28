@@ -3,7 +3,7 @@ discord bot written in py
 
 ## Dependencies
 ---
-* [hyphenate.py](https://nedbatchelder.com/code/modules/hyphenate.html "Ned Batchelder's Webpage") by Ned Batchelder (2007). Used for the `smush` command. 
+* [hyphenate.py](https://nedbatchelder.com/code/modules/hyphenate.html "Ned Batchelder's Webpage") by Ned Batchelder (2007). Used for the `smush` command. Should be located in the root folder (The directory with `discordbot.py`)
 * [discord.py](https://github.com/Rapptz/discord.py "python3 -m pip install -U discord.py") for discord integration, only text is required at this time. 
 * [NLTK](https://github.com/nltk/nltk "pip install -U nltk") Used for the `verbose` and `succinct` commands. 
  * Wordnet
