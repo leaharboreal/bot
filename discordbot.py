@@ -12,7 +12,6 @@ import asyncio
 import random
 import os
 import traceback
-import codecs
 from hyphenate import hyphenate_word
 import nltk
 from nltk.corpus import wordnet
