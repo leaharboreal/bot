@@ -43,6 +43,13 @@ async def on_message(message):
         if message.content.lower().startswith(prefix+'test'):
             print(':robot:')
             await client.send_message(message.channel, ':robot:')
+        
+        elif message.content.lower().startswith(prefix+'info'):
+            print('BOT INFO')
+            embed = discord.Embed(title="BOT INFO", description="Made by @ShiftyWizard#4823 & @Arboreal#4200 for fun.", url="https://github.com/leaharboreal/bot", color=0x1abc9c)
+            embed.set_thumbnail(url="https://raw.githubusercontent.com/leaharboreal/bot/master/profilepic.png")
+            embed.set_footer(text="© bot | 2018", icon_url="https://raw.githubusercontent.com/leaharboreal/bot/master/profilepic.png")
+            await client.send_message(message.channel, embed=embed)
 
         #ADD USER QUOTE TO FILE#
         elif message.content.lower().startswith(prefix+'addquote'):
@@ -81,8 +88,8 @@ async def on_message(message):
                 print("Broken Quote: "+str(quote))
                 traceback.print_exc()
                 await client.send_message(message.channel,txtout)
-            f.close()
-        
+            f.close()   
+
         #@SOMEONE#
         elif '@someone' in message.content.lower().split(" "):
             x = message.server.members
