@@ -88,7 +88,8 @@ async def on_message(message):
             x = message.server.members
             members = []
             for member in x:
-                members.append(str(member.id))
+                if member.permissions_in(message.channel).read_messages and member.permissions_in(message.channel).send_messages:
+                    members.append(str(member.id))
             someone = random.choice(members)
             print(str(someone) + " was mentioned with @someone by " + str(message.author.id))
             txtout = "<@"+someone+">"+" was randomly mentioned with @someone!"
