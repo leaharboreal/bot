@@ -44,7 +44,7 @@ async def on_message(message):
             print(':robot:')
             await client.send_message(message.channel, ':robot:')
         
-        elif message.content.lower().startswith(prefix+'quote'):
+        elif message.content.lower().startswith(prefix+'info'):
             print('BOT INFO')
             embed = discord.Embed(title="BOT INFO", description="Made by @ShiftyWizard#4823 & @Arboreal#4200 for fun.", url="https://github.com/leaharboreal/bot", color=0x1abc9c)
             #embed.add_field(name="Github Repository", url="https://github.com/leaharboreal/bot")
