@@ -26,6 +26,7 @@ Unfortunately this is not currently viable as bot is still very much a work in p
 ---
 Command | Syntax | Usage
 ---|---|---
+`.test`|`.test`|Test if bot can see and reply to commands. Replies with "🤖" (`:robot:`).
 `.addquote`|`.addquote <@user>\|<quote>`|Adds a 'quote' to the server's quote.txt in `\quotes\`
 `.quote`|`.quote [@user]`|Picks a random quote from the server's quote file. If a user is specified, returns the a random quote from that author.
 `@someone`|any message containing `@someone`|Picks a random user from the server and mentions them. Meant to emulate discord's 2018 april fools joke. 
