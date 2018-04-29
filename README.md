@@ -7,8 +7,8 @@ discord bot written in py
 2. Install all [dependencies](https://github.com/leaharboreal/bot#dependencies).
 [Hyphenate.py](https://nedbatchelder.com/code/modules/hyphenate.html "Ned Batchelder's Webpage") should be placed in the root directory (The directory containing `discordbot.py`)
 3. Create the quotes directory in the root directory (`\quotes\`). This is where your quotes will be placed.
-4. Create a text file only containing your private discord bot token. This file must be encoded in **UTF-8**, and named `bottoken_topsecret.txt`. This file should **not** be publicly available.
 5. If you haven't already, create an application [on this page](https://discordapp.com/developers/applications/me "Discord Developer")
+4. Create a text file only containing your private discord bot token. This file must be encoded in **UTF-8**, and named `bottoken_topsecret.txt`. This file should **not** be publicly available.
 6. Invite your bot to a server with your OAuth link that can be generated on the discord website.
 
 ### Invite bot to your server
