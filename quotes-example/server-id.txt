@@ -1,0 +1,4 @@
+<@userid>|quote
+<@userid>|quotes can be multi-word
+<@userid>|Quotes support punctuation!
+<@userid>|this file is automatically created per server that uses quotes. 
