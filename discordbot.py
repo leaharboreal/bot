@@ -194,9 +194,10 @@ async def on_message(message):
 
         #GARBAGE MEME#
         elif 'pee stream' in message.content:
-            txtout = 'https://cdn.discordapp.com/attachments/260061122193784833/404628539728723969/chrome_2018-01-07_20-25-17.jpg'
-            print(txtout)
-            await client.send_message(message.channel,txtout)
+            embed = discord.Embed(color=0xeee657)
+            embed.set_image(url="https://cdn.discordapp.com/attachments/260061122193784833/404628539728723969/chrome_2018-01-07_20-25-17.jpg")
+            print("Pee Stream")
+            await client.send_message(message.channel,embed=embed)
 with open("bottoken_topsecret.txt","r") as bottoken:
     client.run(str(bottoken.read()))
 client.close()
