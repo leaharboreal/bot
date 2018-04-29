@@ -119,7 +119,7 @@ async def on_message(message):
 
         #VERBOSE MESSAGE GENERATOR#
         elif message.content.lower().startswith(prefix+"verbose"):
-            txtin = message.content[10:]
+            txtin = message.content[9:]
             txtout = ""
             synonyms = []
             for word in txtin.split():
