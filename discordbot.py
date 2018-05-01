@@ -103,7 +103,7 @@ async def on_message(message):
             await client.send_message(message.channel,txtout)
 
         #DADBOT#
-        elif message.content.lower().startswith('i\'m') or message.content.lower().startswith('im'):
+        elif message.content.lower().split(" ")[0]=='i\'m' or message.content.lower().split(" ")[0]=='im':
             txtout = "Hi " + " ".join(message.content.split(" ")[1:]) + ", I'm Dad"
             print(txtout)
             await client.send_message(message.channel,txtout)
@@ -197,6 +197,11 @@ async def on_message(message):
             else:
                 txtout='no u'
             print(txtout+' '+str(txtin['compound']))
+            await client.send_message(message.channel,txtout)
+        
+        elif 'oopsie' in message.content.lower().split(" "):
+            txtout="OOPSIE WOOPSIE!! Uwu We make a fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!"
+            print(txtout)
             await client.send_message(message.channel,txtout)
 
         #GARBAGE MEME#
