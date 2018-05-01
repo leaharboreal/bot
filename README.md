@@ -14,6 +14,7 @@ discord bot written in py
 
 ### Invite bot to your server
 Unfortunately this is not currently viable as bot is still very much a work in progress, although it is a future goal to make the bot public. 
+If you *really* want, contact [@ShiftyWizard#4823 or @arboreal#4200](http://discord.gg/YKbEgNp "Click to join Arboreal's Discord Server") and we may be able to figure something out. 
 
 ## Dependencies
 ---
