@@ -1,6 +1,6 @@
 # bot
 discord bot written in py
-![alt text](https://raw.githubusercontent.com/leaharboreal/bot/master/profilepic.png "bot's profile picture")
+![alt text](https://raw.githubusercontent.com/leaharboreal/bot/master/banner.png "banner")
 
 ## Setup
 ### Host bot yourself
