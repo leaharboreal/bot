@@ -12,10 +12,13 @@ import asyncio
 import random
 import os
 import traceback
+import re
 from hyphenate import hyphenate_word
 import nltk
 from nltk.corpus import wordnet
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import urllib.request
+import json 
 
 #Set working directory to file's location
 abspath = os.path.abspath(__file__)
@@ -28,6 +31,10 @@ txtin = ""
 txtout = ""
 synonyms = []
 sid = SentimentIntensityAnalyzer()
+
+#Compile regex for xkcd37
+xkcd37 = re.compile(r"(\w)-ass (\w)", re.MULTILINE)
+xkcd37sub = "\\1 ass-\\2"
 
 @client.event
 async def on_ready():
@@ -83,7 +90,7 @@ async def on_message(message):
 						txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote <User>|<Quote>` to add quotes."
 				print(txtout)
 				await client.send_message(message.channel,txtout)
-			except (IOError,IndexError) as e:
+			except (IOError,IndexError):
 				txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote <User>|<Quote>` to add quotes."
 				print("Broken Quote: "+str(quote))
 				traceback.print_exc()
@@ -100,12 +107,6 @@ async def on_message(message):
 			someone = random.choice(members)
 			print(str(someone) + " was mentioned with @someone by " + str(message.author.id))
 			txtout = "<@"+someone+">"+" was randomly mentioned with @someone!"
-			await client.send_message(message.channel,txtout)
-
-		#DADBOT#
-		elif message.content.lower().split(" ")[0]=='i\'m' or message.content.lower().split(" ")[0]=='im':
-			txtout = "Hi " + " ".join(message.content.split(" ")[1:]) + ", I'm Dad"
-			print(txtout)
 			await client.send_message(message.channel,txtout)
 
 		#RETURN STRING WITH SPACES EVERY CHARACTER#
@@ -169,13 +170,28 @@ async def on_message(message):
 			print(txtout)
 			await client.send_message(message.channel,txtout)
 
+		elif message.content.lower().startswith(prefix+"dog"):
+			with urllib.request.urlopen("https://dog.ceo/api/breeds/image/random") as url:
+				data = json.loads(url.read().decode())
+				embed = discord.Embed(color=0xeee657)
+				embed.set_image(url=data["message"])
+				print(data["message"])
+				await client.send_message(message.channel,embed=embed)
+
+		elif message.content.lower().startswith(prefix+"catfact"):
+			with urllib.request.urlopen("https://cat-fact.herokuapp.com/facts/random") as url:
+				data = json.loads(url.read().decode())
+				txtout=data["text"]
+				print(txtout)
+				await client.send_message(message.channel,txtout)
+
 		#CHOOSE FROM USER SPECIFIED LIST#
 		elif message.content.lower().startswith(prefix+'choose'):
 			items=message.content[7:]
 			txtout=random.choice(items.split("|"))
 			print(txtout)
 			await client.send_message(message.channel,txtout)
-		
+
 		#"RATE" SOMETHING BY PICKING A NUMBER FROM 1 TO 10#
 		elif message.content.lower().startswith(prefix+'rate'):
 			txtout="I\'d rate " + str(message.content[6:]) + " **" + str(random.randrange(10)) + " out of 10!**"
@@ -187,6 +203,7 @@ async def on_message(message):
 			embed = discord.Embed(title="Flip", description=random.choice(['Heads','Tails']), color=0xeee657)
 			await client.send_message(message.channel, embed=embed)
 		
+		#PRINT EMOTES#
 		elif message.content.lower().startswith(prefix+'emotes'):
 			txtout=""
 			with open('emotes.txt','r') as file:
@@ -195,6 +212,19 @@ async def on_message(message):
 				txtout += str(random.choice(lines)).rstrip()
 			print(message.content.lower().split(" ")[1]+" emojis")
 			
+			await client.send_message(message.channel,txtout)
+
+		#PERFORM XKCD37#
+		elif re.search(xkcd37,message.content):
+			txtout = re.sub(xkcd37,xkcd37sub, message.content, 0)
+			txtout = "```> "+txtout+"``` xkcd 37"
+			print(txtout)
+			await client.send_message(message.channel,txtout)
+
+		#DADBOT#
+		elif message.content.lower().split(" ")[0]=='i\'m' or message.content.lower().split(" ")[0]=='im':
+			txtout = "Hi " + " ".join(message.content.split(" ")[1:]) + ", I'm Dad"
+			print(txtout)
 			await client.send_message(message.channel,txtout)
 
 		#REPLY TO COMMENTS ABOUT BOT#
