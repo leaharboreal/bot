@@ -2,3 +2,4 @@ __pycache__/
 quotes/
 settings/
 bottoken_topsecret.txt
+dev_*
