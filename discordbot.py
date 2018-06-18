@@ -112,7 +112,7 @@ async def on_message(message):
 						txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
 					if changed:
 						serversettings.seek(0)# reset file position to the beginning.
-						json.dump(settings, serversettings)
+						json.dump(settings, serversettings, indent=4)
 						serversettings.truncate()
 					print(txtout)
 					await client.send_message(message.channel,txtout)
