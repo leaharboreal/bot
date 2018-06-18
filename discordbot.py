@@ -19,6 +19,7 @@ from nltk.corpus import wordnet
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import urllib.request
 import json 
+import shutil
 
 #Set working directory to file's location
 abspath = os.path.abspath(__file__)
@@ -42,10 +43,13 @@ async def on_ready():
 	print("Account ID: "+client.user.id)
 	print("Bot Account: "+str(client.user.bot))
 	print("||||||||| ONLINE |||||||||")
-
+#
 @client.event
 async def on_message(message):
 	if not client.user.id == message.author.id:
+		if not os.path.isfile(os.path.join('settings',str(message.server.id+'.json'))):
+			shutil.copy2('settings.json', os.path.join('settings',str(message.server.id+'.json')))
+			print("created "+str(os.path.join('settings',str(message.server.id+'.json'))))
 		with open(os.path.join('settings',str(message.server.id+'.json')),'r') as serversettings:
 			settings = json.loads(serversettings.read())
 			prefix = str(settings["bot"]["prefix"])
