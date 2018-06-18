@@ -71,7 +71,7 @@ async def on_message(message):
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
 				f = open(os.path.join('quotes',str(message.server.id+'.txt')),'a+')
-				quotemessage = message.content[10:].split("|")
+				quotemessage = message.content[len(prefix+settings["commands"]["addquote"]["command"]):].split("|")
 				f.write(quotemessage[0] + "|" + quotemessage[1]+'\n')
 				print("Added Quote to file "+message.server.id+".txt: "+str(quotemessage))
 				await client.send_message(message.channel,":white_check_mark:")
@@ -87,7 +87,7 @@ async def on_message(message):
 					for line in f:
 						if "|" in line:
 							if len(message.content) > 7:
-								if str(line).split("|")[0].lower() == message.content.lower()[7:]:
+								if str(line).split("|")[0].lower() == message.content.lower()[len(prefix+settings["commands"]["quote"]["command"]):]:
 									quotes.append(str(line).split("|"))
 							else:
 								quotes.append(str(line).split("|"))
@@ -123,7 +123,7 @@ async def on_message(message):
 			#RETURN STRING WITH SPACES EVERY CHARACTER#
 			elif message.content.lower().startswith(prefix+settings["commands"]["widespace"]["command"]) and settings["commands"]["widespace"]["enabled"]==True:
 				txtout = ""
-				for letter in message.content[10:]:
+				for letter in message.content[len(prefix+settings["commands"]["widespace"]["command"]):]:
 					txtout = str(txtout) + str(letter)
 					txtout = str(txtout) + " "
 				print(txtout)
@@ -131,7 +131,7 @@ async def on_message(message):
 
 			#VERBOSE MESSAGE GENERATOR#
 			elif message.content.lower().startswith(prefix+settings["commands"]["verbose"]["command"]) and settings["commands"]["verbose"]["enabled"]==True:
-				txtin = message.content[9:]
+				txtin = message.content[len(prefix+settings["commands"]["verbose"]["command"]):]
 				txtout = ""
 				synonyms = []
 				for word in txtin.split():
@@ -150,7 +150,7 @@ async def on_message(message):
 
 			#SUCCINCT MESSAGE GENERATOR#
 			elif message.content.lower().startswith(prefix+settings["commands"]["succinct"]["command"]) and settings["commands"]["succinct"]["enabled"]==True:
-				txtin = message.content[10:]
+				txtin = message.content[len(prefix+settings["commands"]["succinct"]["command"]):]
 				txtout = ""
 				synonyms = []
 				for word in txtin.split():
@@ -198,14 +198,14 @@ async def on_message(message):
 
 			#CHOOSE FROM USER SPECIFIED LIST#
 			elif message.content.lower().startswith(prefix+settings["commands"]["choose"]["command"]) and settings["commands"]["choose"]["enabled"]==True:
-				items=message.content[7:]
+				items=message.content[len(prefix+settings["commands"]["choose"]["command"]):]
 				txtout=random.choice(items.split("|"))
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
 			#"RATE" SOMETHING BY PICKING A NUMBER FROM 1 TO 10#
 			elif message.content.lower().startswith(prefix+settings["commands"]["rate"]["command"]) and settings["commands"]["rate"]["enabled"]==True:
-				txtout="I\'d rate " + str(message.content[6:]) + " **" + str(random.randrange(10)) + " out of 10!**"
+				txtout="I\'d rate " + str(message.content[len(prefix+settings["commands"]["rate"]["command"]):]) + " **" + str(random.randrange(10)) + " out of 10!**"
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
