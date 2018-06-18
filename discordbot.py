@@ -68,6 +68,50 @@ async def on_message(message):
 				embed.set_footer(text="© bot | 2018", icon_url="https://raw.githubusercontent.com/leaharboreal/bot/master/profilepic.png")
 				await client.send_message(message.channel, embed=embed)
 
+			elif message.content.lower().startswith(prefix+settings["commands"]["settings"]["command"]) and message.author.server_permissions.manage_server:
+				#upgrade the file's read permissions to rw#
+				serversettings.close()
+				with open(os.path.join('settings',str(message.server.id+'.json')),'r+') as serversettings:
+					settings = json.loads(serversettings.read())
+					if message.content.lower().split(" ")[1]=="commands":
+						if (message.content.lower().split(" ")[2] in settings["commands"]) and not (message.content.lower().split(" ")[2] in ["info","settings"]):
+							if message.content.lower().split(" ")[3]=="command":
+								if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,16}$",message.content.lower().split(" ")[4]):
+									serversettings["commands"][message.content.lower().split(" ")[2]]["command"]=message.content.lower().split(" ")[4]
+									txtout = message.content.lower().split(" ")[2]+" has been set to "+message.content.lower().split(" ")[4]
+								else:
+									txtout = "Could not set command. Commands can only 1-16 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+							elif message.content.lower().split(" ")[3]=="enabled":
+								if message.content.lower().split(" ")[4]=="true":
+									serversettings["commands"][message.content.lower().split(" ")[2]]["enabled"]=True
+									txtout = message.content.lower().split(" ")[2]+" is now `enabled`."
+								elif message.content.lower().split(" ")[4]=="false":
+									serversettings["commands"][message.content.lower().split[2]]["enabled"]=False
+									txtout = message.content.lower().split[2]+" is now `disabled`."
+								else:
+									txtout = "This value can only be set to `true` or `false`."
+							else:
+								txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
+						else:
+							txtout = "Command not found. Check the github page command list which can be accessed with `"+prefix+"info`"
+					elif message.content.lower().split(" ")[1]=="bot":
+						if message.content.lower().split(" ")[2]=="prefix":
+							if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,3}$",message.content.split(" ")[3]):
+								serversettings["bot"]["prefix"]==message.content.split(" ")[3]
+								txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.split(" ")[3]+"`. To access settings, use the new prefix."
+							else:
+								txtout = "Could not set prefix. Prefixes can only 1-3 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+						else:
+							txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
+					else:
+						txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
+					if settings is not json.loads(serversettings.read()):
+						serversettings.seek(0)# reset file position to the beginning.
+						json.dump(settings, serversettings)
+						serversettings.truncate()
+					print(txtout)
+					await client.send_message(message.channel,txtout)
+
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
 				f = open(os.path.join('quotes',str(message.server.id+'.txt')),'a+')

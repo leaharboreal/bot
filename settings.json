@@ -11,6 +11,10 @@
       "command": "info",
       "enabled": true
     },
+    "settings": {
+      "command": "settings",
+      "enabled": true
+    },
     "addquote": {
       "command": "addquote",
       "enabled": true
