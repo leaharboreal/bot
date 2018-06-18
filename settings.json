@@ -7,6 +7,10 @@
       "command": "test",
       "enabled": true
     },
+    "info": {
+      "command": "info",
+      "enabled": true
+    },
     "addquote": {
       "command": "addquote",
       "enabled": true
@@ -19,7 +23,7 @@
       "command": "@someone",
       "enabled": true
     },
-    "Dadbot": {
+    "dadbot": {
       "enabled": true
     },
     "xkcd37": {
@@ -39,6 +43,14 @@
     },
     "smush": {
       "command": "smush",
+      "enabled": true
+    },
+    "flip": {
+      "command": "flip",
+      "enabled": true
+    },
+    "emotes": {
+      "command": "emotes",
       "enabled": true
     },
     "choose": {
@@ -61,11 +73,10 @@
       "enabled": true
     },
     "peestream": {
-      "command": "peestream",
+      "command": "pee stream",
       "enabled": true
     },
     "oopsie": {
-      "command": "oopsie",
       "enabled": true
     }
   }
