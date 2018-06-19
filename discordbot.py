@@ -43,6 +43,7 @@ async def on_ready():
 	print("Account ID: "+client.user.id)
 	print("Bot Account: "+str(client.user.bot))
 	print("||||||||| ONLINE |||||||||")
+	await client.change_presence(game=discord.Game(name="Use .info for help."))
 #
 @client.event
 async def on_message(message):
@@ -78,7 +79,7 @@ async def on_message(message):
 						if message.content.lower().split(" ")[1]=="commands":
 							if len(message.content.lower().split(" "))>2:
 								if (message.content.lower().split(" ")[2] in settings["commands"]) and not (message.content.lower().split(" ")[2] in ["info","settings"]):
-									if len(message.content.lower().split(" "))>4 and len(message.content.lower().split(" "))<5:
+									if len(message.content.lower().split(" "))>3 and len(message.content.lower().split(" "))<6:
 										if message.content.lower().split(" ")[3]=="command":
 											if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,16}$",message.content.lower().split(" ")[4]):
 												settings["commands"][message.content.lower().split(" ")[2]]["command"]=message.content.lower().split(" ")[4]
@@ -98,9 +99,9 @@ async def on_message(message):
 											else:
 												txtout = "This value can only be set to `true` or `false`."
 										else:
-											txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
+											txtout = "Incorrect syntax(E:2). `"+prefix+"settings commands "+message.content.split(" ")[2]+" <command|enabled> <value>`"
 									else:
-										txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
+										txtout = "Incorrect syntax (E:1). `"+prefix+"settings commands "+message.content.split(" ")[2]+" <command|enabled> <value>`"
 								else:
 									txtout = "Command `"+message.content.split(" ")[2]+"` not found. Check the github page command list which can be accessed with `"+prefix+"info`"
 							else:
@@ -109,16 +110,19 @@ async def on_message(message):
 						elif message.content.lower().split(" ")[1]=="bot":
 							if len(message.content.lower().split(" "))>2:
 								if message.content.lower().split(" ")[2]=="prefix":
-									if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,3}$",message.content.split(" ")[3]):
-										settings["bot"]["prefix"]=message.content.split(" ")[3]
-										changed=True
-										txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.split(" ")[3]+"`. To access settings, use the new prefix."
+									if len(message.content.lower().split(" "))>3:
+										if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,4}$",message.content.split(" ")[3]):
+											settings["bot"]["prefix"]=message.content.lower().split(" ")[3]
+											changed=True
+											txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.lower().split(" ")[3]+"`. To access settings, use the new prefix."
+										else:
+											txtout = "Could not set prefix. Prefixes can only 1-4 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
 									else:
-										txtout = "Could not set prefix. Prefixes can only 1-3 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+										txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
 								else:
-									txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
+									txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
 							else:
-								txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
+								txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
 						else:
 							txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
 					else:
