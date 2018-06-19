@@ -1,0 +1,87 @@
+{
+  "bot": {
+    "prefix": "."
+  },
+  "commands": {
+    "test": {
+      "command": "test",
+      "enabled": true
+    },
+    "info": {
+      "command": "info",
+      "enabled": true
+    },
+    "settings": {
+      "command": "settings",
+      "enabled": true
+    },
+    "addquote": {
+      "command": "addquote",
+      "enabled": true
+    },
+    "quote": {
+      "command": "quote",
+      "enabled": true
+    },
+    "@someone": {
+      "command": "@someone",
+      "enabled": true
+    },
+    "dadbot": {
+      "enabled": true
+    },
+    "xkcd37": {
+      "enabled": true
+    },
+    "widespace": {
+      "command": "widespace",
+      "enabled": true
+    },
+    "verbose": {
+      "command": "verbose",
+      "enabled": true
+    },
+    "succinct": {
+      "command": "succinct",
+      "enabled": true
+    },
+    "smush": {
+      "command": "smush",
+      "enabled": true
+    },
+    "flip": {
+      "command": "flip",
+      "enabled": true
+    },
+    "emotes": {
+      "command": "emotes",
+      "enabled": true
+    },
+    "choose": {
+      "command": "choose",
+      "enabled": true
+    },
+    "rate": {
+      "command": "rate",
+      "enabled": true
+    },
+    "dog": {
+      "command": "dog",
+      "enabled": true
+    },
+    "catfact": {
+      "command": "catfact",
+      "enabled": true
+    },
+    "bot": {
+      "enabled": true
+    },
+    "peestream": {
+      "command": "pee stream",
+      "enabled": true
+    },
+    "oopsie": {
+      "enabled": true
+    }
+  }
+}

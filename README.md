@@ -29,6 +29,7 @@ If you *really* want, contact [@ShiftyWizard#4823 or @arboreal#4200](http://disc
 Command | Syntax | Usage
 ---|---|---
 `.test`|`.test`|Test if bot can see and reply to commands. Replies with "🤖" (`:robot:`).
+`.settings`|`.settings <bot> prefix <value>` or `.settings <commands> <command> <command\|enabled> <value>`|Sets command settings server wide. Must have minimum of server manager privlages to use. 
 `.addquote`|`.addquote <@user>\|<quote>`|Adds a 'quote' to the server's quote.txt in `\quotes\`
 `.quote`|`.quote [@user]`|Picks a random quote from the server's quote file. If a user is specified, returns the a random quote from that author.
 `@someone`|any message containing `@someone`|Picks a random user from the server and mentions them. Meant to emulate discord's 2018 april fools joke. 
