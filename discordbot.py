@@ -74,40 +74,53 @@ async def on_message(message):
 				with open(os.path.join('settings',str(message.server.id+'.json')),'r+') as serversettings:
 					settings = json.loads(serversettings.read())
 					changed=False
-					if message.content.lower().split(" ")[1]=="commands":
-						if (message.content.lower().split(" ")[2] in settings["commands"]) and not (message.content.lower().split(" ")[2] in ["info","settings"]):
-							if message.content.lower().split(" ")[3]=="command":
-								if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,16}$",message.content.lower().split(" ")[4]):
-									settings["commands"][message.content.lower().split(" ")[2]]["command"]=message.content.lower().split(" ")[4]
-									changed=True
-									txtout = message.content.lower().split(" ")[2]+" has been set to "+message.content.lower().split(" ")[4]
+					if len(message.content.lower().split(" "))>1:
+						if message.content.lower().split(" ")[1]=="commands":
+							if len(message.content.lower().split(" "))>2:
+								if (message.content.lower().split(" ")[2] in settings["commands"]) and not (message.content.lower().split(" ")[2] in ["info","settings"]):
+									if len(message.content.lower().split(" "))>4 and len(message.content.lower().split(" "))<5:
+										if message.content.lower().split(" ")[3]=="command":
+											if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,16}$",message.content.lower().split(" ")[4]):
+												settings["commands"][message.content.lower().split(" ")[2]]["command"]=message.content.lower().split(" ")[4]
+												changed=True
+												txtout = message.content.lower().split(" ")[2]+" has been set to "+message.content.lower().split(" ")[4]
+											else:
+												txtout = "Could not set command. Commands can only 1-16 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+										elif message.content.lower().split(" ")[3]=="enabled":
+											if message.content.lower().split(" ")[4]=="true":
+												settings["commands"][message.content.lower().split(" ")[2]]["enabled"]=True
+												changed=True
+												txtout = message.content.lower().split(" ")[2]+" is now `enabled`."
+											elif message.content.lower().split(" ")[4]=="false":
+												settings["commands"][str(message.content.lower().split(" ")[2])]["enabled"]=False
+												changed=True
+												txtout = message.content.lower().split(" ")[2]+" is now `disabled`."
+											else:
+												txtout = "This value can only be set to `true` or `false`."
+										else:
+											txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
+									else:
+										txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
 								else:
-									txtout = "Could not set command. Commands can only 1-16 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
-							elif message.content.lower().split(" ")[3]=="enabled":
-								if message.content.lower().split(" ")[4]=="true":
-									settings["commands"][message.content.lower().split(" ")[2]]["enabled"]=True
-									changed=True
-									txtout = message.content.lower().split(" ")[2]+" is now `enabled`."
-								elif message.content.lower().split(" ")[4]=="false":
-									settings["commands"][str(message.content.lower().split(" ")[2])]["enabled"]=False
-									changed=True
-									txtout = message.content.lower().split(" ")[2]+" is now `disabled`."
-								else:
-									txtout = "This value can only be set to `true` or `false`."
+									txtout = "Command `"+message.content.split(" ")[2]+"` not found. Check the github page command list which can be accessed with `"+prefix+"info`"
 							else:
 								txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
-						else:
-							txtout = "Command not found. Check the github page command list which can be accessed with `"+prefix+"info`"
-					elif message.content.lower().split(" ")[1]=="bot":
-						if message.content.lower().split(" ")[2]=="prefix":
-							if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,3}$",message.content.split(" ")[3]):
-								settings["bot"]["prefix"]=message.content.split(" ")[3]
-								changed=True
-								txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.split(" ")[3]+"`. To access settings, use the new prefix."
+								
+						elif message.content.lower().split(" ")[1]=="bot":
+							if len(message.content.lower().split(" "))>2:
+								if message.content.lower().split(" ")[2]=="prefix":
+									if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,3}$",message.content.split(" ")[3]):
+										settings["bot"]["prefix"]=message.content.split(" ")[3]
+										changed=True
+										txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.split(" ")[3]+"`. To access settings, use the new prefix."
+									else:
+										txtout = "Could not set prefix. Prefixes can only 1-3 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+								else:
+									txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
 							else:
-								txtout = "Could not set prefix. Prefixes can only 1-3 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+								txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
 						else:
-							txtout = "Incorrect syntax. `"+prefix+"settings bot <prefix> <value>`"
+							txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
 					else:
 						txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
 					if changed:
