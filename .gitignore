@@ -3,3 +3,4 @@ quotes/
 settings/
 bottoken_topsecret.txt
 dev_*
+.DS_Store
