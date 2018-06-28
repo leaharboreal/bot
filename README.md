@@ -13,8 +13,9 @@ discord bot written in py
 6. Invite your bot to a server with your OAuth link that can be generated on the discord website.
 
 ### Invite bot to your server
-Unfortunately this is not currently viable as bot is still very much a work in progress, although it is a future goal to make the bot public. 
-If you *really* want, contact [@ShiftyWizard#4823 or @arboreal#4200](http://discord.gg/YKbEgNp "Click to join Arboreal's Discord Server") and we may be able to figure something out. 
+To invite bot to a server that you manage, click [here](https://discordapp.com/oauth2/authorize?client_id=426669660549677056&scope=bot "Invite bot") and follow the prompts. Bot is a project just for fun, and therefor may not be running 24/7. The bot may be taken down at any time without warning. If you have a problem with this you can host bot yourself using the instructions above. I'm not a lawyer or anything but _**please don't**_ misuse bot for anything:  
+a) illegal  
+b) objectionable/questionable  
 
 ## Dependencies
 ---
@@ -45,3 +46,6 @@ Auto XKCD-37|any message containing `something-ass something`|Automatically perf
 `.dog`|`.dog`|Returns a random dog image using the dog.ceo api.
 `.catfact`|`.catfact`|Returns a random cat fact using a catfacts api.
 `bot`|any message containing `bot`|Uses sentiment analysis to respond to comments about bot. Yes, it is overkill. 
+
+## Contact
+Something isn't working? Contact [@ShiftyWizard#4823 or @arboreal#4200](http://discord.gg/YKbEgNp "Click to join Arboreal's Discord Server") on discord. 
