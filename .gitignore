@@ -4,3 +4,4 @@ settings/
 bottoken_topsecret.txt
 dev_*
 nohup.out
+.vscode
