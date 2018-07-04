@@ -144,7 +144,7 @@ async def on_message(message):
 					quotes = json.loads(f.read())
 					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
 						quotemessage = message
-					if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]+$",quotemessage.content.lower()):
+					if re.match(r"^[\w\d~!@#$%^&+=;:, ./?\*\-]+$",quotemessage.content.lower()):
 						if quotemessage.author.id in quotes:
 							quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
 							quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
