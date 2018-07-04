@@ -144,18 +144,21 @@ async def on_message(message):
 					quotes = json.loads(f.read())
 					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
 						quotemessage = message
-					if quotemessage.author.id in quotes:
-						quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
-						quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
+					if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]+$",quotemessage.content.lower()):
+						if quotemessage.author.id in quotes:
+							quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
+							quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
+						else:
+							quoteid = 1
+							quotes[quotemessage.author.id]={}
+							quotes[quotemessage.author.id][quoteid] = str(quotemessage.content)
+						print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content))
+						await client.send_message(message.channel,":white_check_mark: Added quote: "+str(quotemessage.content))
+						f.seek(0)
+						json.dump(quotes, f, indent=4)
+						f.close()
 					else:
-						quoteid = 1
-						quotes[quotemessage.author.id]={}
-						quotes[quotemessage.author.id][quoteid] = str(quotemessage.content)
-					print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content))
-					await client.send_message(message.channel,":white_check_mark:")
-					f.seek(0)
-					json.dump(quotes, f, indent=4)
-					f.close()
+						await client.send_message(message.channel,":negative_squared_cross_mark: Quote contains invalid characters.")
 			
 			#.quote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["quote"]["command"]) and settings["commands"]["quote"]["enabled"]==True:
