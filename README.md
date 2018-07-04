@@ -31,7 +31,7 @@ Command | Syntax | Usage
 ---|---|---
 `.test`|`.test`|Test if bot can see and reply to commands. Replies with "🤖" (`:robot:`).
 `.settings`|`.settings <bot> prefix <value>` or `.settings <commands> <command> <command\|enabled> <value>`|Sets command settings server wide. Must have minimum of server manager privlages to use. 
-`.addquote`|`.addquote <@user>\|<quote>`|Adds a 'quote' to the server's quote.txt in `\quotes\`
+`.addquote`|`.addquote`|Adds the message above as a 'quote' to the server's quote.txt in `\quotes\`
 `.quote`|`.quote [@user]`|Picks a random quote from the server's quote file. If a user is specified, returns the a random quote from that author.
 `@someone`|any message containing `@someone`|Picks a random user from the server and mentions them. Meant to emulate discord's 2018 april fools joke. 
 Dadbot|`I'm <message>`|Replies to user with the side splittingly hilarious 'Hi, \<so and so>, I'm Dad'. No, I will not remove this feature. 

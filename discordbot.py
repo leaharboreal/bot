@@ -137,43 +137,47 @@ async def on_message(message):
 
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
-				f = open(os.path.join('quotes',str(message.server.id+'.txt')),'a+')
-				quotemessage = message.content[len(prefix+settings["commands"]["addquote"]["command"]):].split("|")
-				f.write(quotemessage[0] + "|" + quotemessage[1]+'\n')
-				print("Added Quote to file "+message.server.id+".txt: "+str(quotemessage))
-				await client.send_message(message.channel,":white_check_mark:")
-				f.close()
+				if not os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
+					with open(os.path.join('quotes',str(message.server.id+'.json')), 'a') as f:
+						f.write("{\n}")
+				with open(os.path.join('quotes',str(message.server.id+'.json')),'r+') as f:
+					quotes = json.loads(f.read())
+					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
+						quotemessage = message
+					if re.match(r"^[\w\d~!@#$%^&+=;:, ./?\*\-]+$",quotemessage.content.lower()):
+						if quotemessage.author.id in quotes:
+							quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
+							quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
+						else:
+							quoteid = 1
+							quotes[quotemessage.author.id]={}
+							quotes[quotemessage.author.id][quoteid] = str(quotemessage.content)
+						print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content))
+						await client.send_message(message.channel,":white_check_mark: Added quote: "+str(quotemessage.content))
+						f.seek(0)
+						json.dump(quotes, f, indent=4)
+						f.close()
+					else:
+						await client.send_message(message.channel,":negative_squared_cross_mark: Quote contains invalid characters.")
 			
 			#.quote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["quote"]["command"]) and settings["commands"]["quote"]["enabled"]==True:
-				try:
-					f = open(os.path.join('quotes',str(message.server.id+'.txt')),'r')
-					quotes = []
-					quote = []
-
-					for line in f:
-						if "|" in line:
-							if len(message.content) > 7:
-								if str(line).split("|")[0].lower() == message.content.lower()[len(prefix+settings["commands"]["quote"]["command"]):]:
-									quotes.append(str(line).split("|"))
+				if os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
+					with open(os.path.join('quotes',str(message.server.id+'.json')),'r') as f:
+						quotes = json.loads(f.read())
+						if len(message.content.split(" "))>=2:
+							if message.content.split(" ")[1][3:-1] in quotes.keys():
+								quoteauthor = message.content.split(" ")[1][3:-1]
+								txtout="```"+str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])+"``` -<@!"+str(quoteauthor)+">"
 							else:
-								quotes.append(str(line).split("|"))
-					if quotes:
-						quote = random.choice(quotes)
-						txtout="```"+quote[1]+"```-"+quote[0]
-					else:
-						if len(message.content) > 7:
-							txtout="No quotes found for `"+message.content[7:]+"`."
+								txtout="Oops! "+message.content.split(" ")[1]+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
 						else:
-							txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote <User>|<Quote>` to add quotes."
-					print(txtout)
-					await client.send_message(message.channel,txtout)
-				except (IOError,IndexError):
-					txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote <User>|<Quote>` to add quotes."
-					print("Broken Quote: "+str(quote))
-					traceback.print_exc()
-					await client.send_message(message.channel,txtout)
-				f.close()   
+							quoteauthor = random.choice(list(quotes.keys()))
+							txtout="```"+str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])+"``` -<@!"+str(quoteauthor)+">"
+				else:
+					txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote` to add quotes."
+				print(txtout)
+				await client.send_message(message.channel,txtout)
 
 			#@SOMEONE#
 			elif settings["commands"]["@someone"]["command"] in message.content.lower().split(" ") and settings["commands"]["addquote"]["enabled"]==True:
