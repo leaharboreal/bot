@@ -217,28 +217,39 @@ async def on_message(message):
 
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
+				
+				#check if the quotes file exists for the server, if not, create a file with an empty json object#
 				if not os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')), 'a') as f:
-						f.write("{\n}")
+						f.write("{\n}") 
+				#open the server's quote file#
 				with open(os.path.join('quotes',str(message.server.id+'.json')),'r+') as f:
-					quotes = json.loads(f.read())
+					quotes = json.loads(f.read()) #initialize json file as python object#
+					
+					#set quotemessage to the message object before the user's command#
 					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
 						quotemessage = message
+					
+					#ensure quote does not contain any illegal symbols#
 					if re.match(r"^[\w\d~!@#$%^&+=;:, ./?\*\-]+$",quotemessage.content.lower()):
-						if quotemessage.author.id in quotes:
+						if quotemessage.author.id in quotes: #if the user already has a quote object then append quote#
 							quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
 							quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
-						else:
+						else: #if they don't have a quote object, create one with their 1st quote#
 							quoteid = 1
 							quotes[quotemessage.author.id]={}
 							quotes[quotemessage.author.id][quoteid] = str(quotemessage.content)
-						print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content))
-						await client.send_message(message.channel,":white_check_mark: Added quote: "+str(quotemessage.content))
+						
+						print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content)) #add log of changes#
+						await client.send_message(message.channel,":white_check_mark: Added quote: `"+str(quotemessage.content)+"`") #confirm addition of quote#
+						
+						#seek to start of file before dumping the new json object in the file#
 						f.seek(0)
 						json.dump(quotes, f, indent=4)
-						f.close()
-					else:
+						f.close() #close the file since we are done with it#
+					else: #tell user that the quote contains invalid characters#
 						await client.send_message(message.channel,":negative_squared_cross_mark: Quote contains invalid characters.")
+						f.close() #close the file since we are done with it#
 			
 			#.quote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["quote"]["command"]) and settings["commands"]["quote"]["enabled"]==True:
