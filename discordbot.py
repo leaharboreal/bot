@@ -74,64 +74,144 @@ async def on_message(message):
 				#upgrade the file's read permissions to rw#
 				serversettings.close()
 				with open(os.path.join('settings',str(message.server.id+'.json')),'r+') as serversettings:
+					#convert the current server's settings.json file into a python object#
 					settings = json.loads(serversettings.read())
+					
+					#set changed to false so if no setting is modified the file will be unchanged#
 					changed=False
+					
+					#check if number of args in message is high enough else reply with syntax error#
 					if len(message.content.lower().split(" "))>1:
+						
+						#check if the first argument is commands#
 						if message.content.lower().split(" ")[1]=="commands":
+							
+							#check if number of args in message is high enough for this branch#
 							if len(message.content.lower().split(" "))>2:
+								
+								#ensure the command exists and is not the info or settings command#
 								if (message.content.lower().split(" ")[2] in settings["commands"]) and not (message.content.lower().split(" ")[2] in ["info","settings"]):
+									
+									#check if number of args in message is high enough for this branch#
 									if len(message.content.lower().split(" "))>3 and len(message.content.lower().split(" "))<6:
+										
+										#check if the user wants to change the command alias#
 										if message.content.lower().split(" ")[3]=="command":
+											
+											#ensure the command contains only safe characters and is smaller or equal to 16 characters#
 											if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,16}$",message.content.lower().split(" ")[4]):
+												
+												#set the selected command to the alias#
 												settings["commands"][message.content.lower().split(" ")[2]]["command"]=message.content.lower().split(" ")[4]
+												
+												#set changed to true, ensuring the file is saved#
 												changed=True
+												
+												#set output message to confirmation#
 												txtout = message.content.lower().split(" ")[2]+" has been set to "+message.content.lower().split(" ")[4]
+											
+											#reject command alias#
 											else:
 												txtout = "Could not set command. Commands can only 1-16 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+										
+										#check if the user wants to change if command is enabled#
 										elif message.content.lower().split(" ")[3]=="enabled":
+											
+											#check if argument is true#
 											if message.content.lower().split(" ")[4]=="true":
+												
+												#set the commands enabled value to true#
 												settings["commands"][message.content.lower().split(" ")[2]]["enabled"]=True
+												
+												#set changed to true, ensuring the file is saved#
 												changed=True
+												
+												#set output message to confirmation#
 												txtout = message.content.lower().split(" ")[2]+" is now `enabled`."
+											
+											#check if answer is false if not true#
 											elif message.content.lower().split(" ")[4]=="false":
+												
+												#set the commands enabled value to false#
 												settings["commands"][str(message.content.lower().split(" ")[2])]["enabled"]=False
+												
+												#set changed to true, ensuring the file is saved#
 												changed=True
+												
+												#set output message to confirmation#
 												txtout = message.content.lower().split(" ")[2]+" is now `disabled`."
+											
+											#reject value as it is not true or false#
 											else:
 												txtout = "This value can only be set to `true` or `false`."
+										#unrecognised argument#
 										else:
 											txtout = "Incorrect syntax(E:2). `"+prefix+"settings commands "+message.content.split(" ")[2]+" <command|enabled> <value>`"
+									#not enough args#
 									else:
 										txtout = "Incorrect syntax (E:1). `"+prefix+"settings commands "+message.content.split(" ")[2]+" <command|enabled> <value>`"
+								#unrecognised/locked argument#
 								else:
-									txtout = "Command `"+message.content.split(" ")[2]+"` not found. Check the github page command list which can be accessed with `"+prefix+"info`"
+									txtout = "Command `"+message.content.split(" ")[2]+"` not found or cannot be modified. Check the github page command list which can be accessed with `"+prefix+"info`"
+							#not enough args#
 							else:
 								txtout = "Incorrect syntax. `"+prefix+"settings commands <commandname> <command|enabled> <value>`"
-								
+						
+						#check if the first argument is bot, if it isn't commands#		
 						elif message.content.lower().split(" ")[1]=="bot":
+							
+							#check if number of args in message is high enough for this branch#
 							if len(message.content.lower().split(" "))>2:
+								
+								#check if arg is equal to prefix#
 								if message.content.lower().split(" ")[2]=="prefix":
+									
+									#check if number of args in message is high enough for this branch#
 									if len(message.content.lower().split(" "))>3:
+										
+										#check if user's value matches rule#
 										if re.match(r"^[\w\d~!@#$%^&+=;:,./?\*\-]{1,4}$",message.content.split(" ")[3]):
+											
+											#set bot prefix to the user value#
 											settings["bot"]["prefix"]=message.content.lower().split(" ")[3]
+											
+											#set changed to true, ensuring the file is saved#
 											changed=True
+											
+											#set output message to confirmation#
 											txtout = "Prefix set. Bot will respond to commands with the prefix `"+message.content.lower().split(" ")[3]+"`. To access settings, use the new prefix."
+										
+										#reject prefix as it does not conform to the character requirements#
 										else:
 											txtout = "Could not set prefix. Prefixes can only 1-4 characters long and contain letters, numbers and these symbols: `~!@#$%^&+=;:,./?*-`"
+									
+									#not enough args#
 									else:
 										txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
+								
+								#incorrect arg#
 								else:
 									txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
+							
+							#not enough args#
 							else:
 								txtout = "Incorrect syntax. `"+prefix+"settings bot prefix <value>`"
+						
+						#the first argument is incorrect, so respond with a syntax error#
 						else:
 							txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
+					
+					#not enough args#
 					else:
 						txtout = "Incorrect syntax. `"+prefix+"settings <commands|bot>`"
+					
+					#if the file has been changed at any point, save changes#
 					if changed:
 						serversettings.seek(0)# reset file position to the beginning.
 						json.dump(settings, serversettings, indent=4)
 						serversettings.truncate()
+					
+					#log output in console then send as discord message#
 					print(txtout)
 					await client.send_message(message.channel,txtout)
 
