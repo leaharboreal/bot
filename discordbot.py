@@ -257,8 +257,8 @@ async def on_message(message):
 					with open(os.path.join('quotes',str(message.server.id+'.json')),'r') as f:
 						quotes = json.loads(f.read())
 						if len(message.content.split(" "))>=2:
-							if message.content.split(" ")[1][3:-1] in quotes.keys():
-								quoteauthor = message.content.split(" ")[1][3:-1]
+							if str(re.match(r".+(\d{18}).+",message.content).group(1)) in quotes.keys():
+								quoteauthor = str(re.match(r".+(\d{18}).+",message.content).group(1))
 								txtout="```"+str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])+"``` -<@!"+str(quoteauthor)+">"
 							else:
 								txtout="Oops! "+message.content.split(" ")[1]+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
