@@ -285,9 +285,13 @@ async def on_message(message):
 			#RETURN STRING WITH SPACES EVERY CHARACTER#
 			elif message.content.lower().startswith(prefix+settings["commands"]["widespace"]["command"]) and settings["commands"]["widespace"]["enabled"]==True:
 				txtout = ""
-				for letter in message.content[len(prefix+settings["commands"]["widespace"]["command"]):]:
-					txtout = str(txtout) + str(letter)
-					txtout = str(txtout) + " "
+				x = ""
+				for char in message.content[len(prefix+settings["commands"]["widespace"]["command"]):]:
+					if ord(char) in range(33,127):
+						x = chr(ord(char)+0xFEE0)
+					else:
+						x = char
+					txtout = txtout + str(x) + " "
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
