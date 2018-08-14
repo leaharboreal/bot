@@ -47,8 +47,11 @@ async def on_ready():
 	await client.change_presence(game=discord.Game(name="Use .info for help."))
 
 	#Lists local server files that have no corresponding server
+	serverids=[]
+	for server in client.servers:
+		serverids.append(server.id) 
 	for file in os.listdir('settings'):
-		if not os.path.basename(file)[0] in client.Servers.id:
+		if not os.path.basename(file)[0] in serverids:
 			print(client.user.name + " has been removed from " + os.path.basename(file) + ", or the server no longer exists. ")
 			print("To remove this warning, remove the file from the servers directory. ")
 	print("||||||||| READY |||||||||")
