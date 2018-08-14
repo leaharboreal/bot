@@ -51,10 +51,11 @@ async def on_ready():
 	for server in client.servers:
 		serverids.append(server.id)
 	print(serverids)
+	print(os.listdir('settings'))
 	for file in os.listdir('settings'):
 		if not file.split(".")[0] in serverids:
 			print(client.user.name + " has been removed from " + file.split(".")[0] + ", or the server no longer exists. ")
-			print("To remove this warning, remove the file from the servers directory. ")
+			#print("To remove this warning, remove the file from the servers directory. ")
 	print("||||||||| READY |||||||||")
 #
 @client.event
