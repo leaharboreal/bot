@@ -45,6 +45,13 @@ async def on_ready():
 	print("Bot Account: "+str(client.user.bot))
 	print("||||||||| ONLINE |||||||||")
 	await client.change_presence(game=discord.Game(name="Use .info for help."))
+
+	#Lists local server files that have no corresponding server
+	for file in os.listdir('settings'):
+		if not os.path.basename(file)[0] in client.Servers:
+			print(client.user.name + " has been removed from " + os.path.basename(file) + ", or the server no longer exists. ")
+			print("To remove this warning, remove the file from the servers directory. ")
+	print("||||||||| READY |||||||||")
 #
 @client.event
 async def on_message(message):
