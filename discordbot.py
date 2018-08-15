@@ -13,6 +13,7 @@ import asyncio
 import random
 import os
 import traceback
+import math
 import re
 from hyphenate import hyphenate_word
 import nltk
@@ -60,10 +61,32 @@ async def on_ready():
 #
 @client.event
 async def on_message(message):
-	if not client.user.id == message.author.id:
+	if client.user.id != message.author.id and not message.author.bot:
+		if not os.path.isfile('users.json'):
+			with open('users.json','r+') as userfile:
+				userfile.write("{}")
+		with open('users.json','r+') as userfile:
+			users = json.loads(userfile.read())
+			if not message.author.id in users.keys():
+				users[message.author.id] = {'xp':0,'level':1}
+			
+			#Add xp to a user's file based off of message length and a modifier
+			users[message.author.id]['xp'] += math.floor(len(message.content)/4) + 10
+			
+			if users[message.author.id]['xp']>int(users[message.author.id]['level'])*100:
+				print(message.author.name + " just leveled up!")
+				users[message.author.id]['level'] += 1
+				users[message.author.id]['xp'] = 0
+				embed = discord.Embed(title="Level Up!", description=str(message.author.display_name) + " is now level " + str(users[message.author.id]['level']) + "!", color=0xbc42f4)
+				if message.author.avatar_url:
+					embed.set_thumbnail(url=message.author.avatar_url)
+				await client.send_message(message.channel, embed=embed)
+			json.dump(users, userfile, indent=4)
+
 		if not os.path.isfile(os.path.join('settings',str(message.server.id+'.json'))):
 			shutil.copy2('settings.json', os.path.join('settings',str(message.server.id+'.json')))
 			print("created "+str(os.path.join('settings',str(message.server.id+'.json'))))
+
 		with open(os.path.join('settings',str(message.server.id+'.json')),'r') as serversettings:
 			settings = json.loads(serversettings.read())
 			prefix = str(settings["bot"]["prefix"])
