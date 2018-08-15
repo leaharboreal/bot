@@ -64,7 +64,7 @@ async def on_message(message):
 	if client.user.id != message.author.id and not message.author.bot:
 		if not os.path.isfile('users.json'):
 			with open('users.json','w') as userfile:
-				userfile.write("{\n})
+				userfile.write("{\n}")
 		with open('users.json','r+') as userfile:
 			users = json.loads(userfile.read())
 			if not message.author.id in users.keys():
