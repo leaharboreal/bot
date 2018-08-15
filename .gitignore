@@ -1,6 +1,7 @@
 __pycache__/
 quotes/
 settings/
+users.json
 bottoken_topsecret.txt
 dev_*
 nohup.out
