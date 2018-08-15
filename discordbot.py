@@ -63,7 +63,7 @@ async def on_ready():
 async def on_message(message):
 	if client.user.id != message.author.id and not message.author.bot:
 		if not os.path.isfile('users.json'):
-			with open('users.json','r+') as userfile:
+			with open('users.json','w') as userfile:
 				userfile.write("{}")
 		with open('users.json','r+') as userfile:
 			users = json.loads(userfile.read())
