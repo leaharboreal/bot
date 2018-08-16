@@ -69,8 +69,6 @@ if not os.path.isfile('users.json'):
 			userfile.write("{\n}")
 			print("Created users.json")
 
-
-
 @client.event
 async def on_ready():
 	#Lists local server files that have no corresponding server
@@ -290,7 +288,6 @@ async def on_message(message):
 
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
-				
 				#check if the quotes file exists for the server, if not, create a file with an empty json object#
 				if not os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')), 'a') as f:
