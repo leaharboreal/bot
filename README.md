@@ -31,6 +31,7 @@ Command | Syntax | Usage
 ---|---|---
 `.test`|`.test`|Test if bot can see and reply to commands. Replies with "🤖" (`:robot:`).
 `.settings`|`.settings <bot> prefix <value>` or `.settings <commands> <command> <command\|enabled> <value>`|Sets command settings server wide. Must have minimum of server manager privlages to use. 
+`.level`|`.level`|Check your current level and experience. 
 `.addquote`|`.addquote`|Adds the message above as a 'quote' to the server's quote.txt in `\quotes\`
 `.quote`|`.quote [@user]`|Picks a random quote from the server's quote file. If a user is specified, returns the a random quote from that author.
 `@someone`|any message containing `@someone`|Picks a random user from the server and mentions them. Meant to emulate discord's 2018 april fools joke. 
@@ -48,4 +49,4 @@ Auto XKCD-37|any message containing `something-ass something`|Automatically perf
 `bot`|any message containing `bot`|Uses sentiment analysis to respond to comments about bot. Yes, it is overkill. 
 
 ## Contact
-Something isn't working? Contact [@ShiftyWizard#4823 or @arboreal#4200](http://discord.gg/YKbEgNp "Click to join Arboreal's Discord Server") on discord. 
+Something isn't working? Create a github issue and explain your problem. 
