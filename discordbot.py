@@ -13,6 +13,7 @@ import asyncio
 import random
 import os
 import traceback
+import math
 import re
 from hyphenate import hyphenate_word
 import nltk
@@ -38,20 +39,82 @@ sid = SentimentIntensityAnalyzer()
 xkcd37 = re.compile(r"(\w)-ass (\w)", re.MULTILINE)
 xkcd37sub = "\\1 ass-\\2"
 
+#Make some nice room in the command line
+print("")
+
+#Pre-boot settings update
+print("|| Updating settings... ")
+with open('settings.json','r') as settingsfile:
+	master = json.loads(settingsfile.read())
+	for file in os.listdir("settings"):
+		with open(os.path.join("settings",file),'r+') as serverfile:
+			changed=False
+			serversettings = json.loads(serverfile.read())
+			for command in master['commands'].keys():
+				if not command in serversettings['commands'].keys():
+					serversettings['commands'][command] = master['commands'][command]
+					changed = True
+					print("| Command " + command + " added to " + file)
+			if changed:
+				serverfile.seek(0)# reset file position to the beginning.
+				json.dump(serversettings, serverfile, indent=4)
+				serverfile.truncate()
+			serverfile.close()
+	settingsfile.close()
+print("|| Settings up to date. ")
+
+#Create the users file if it doesn't exist
+if not os.path.isfile('users.json'):
+		with open('users.json','w') as userfile:
+			userfile.write("{\n}")
+			print("Created users.json")
+
 @client.event
 async def on_ready():
+	#Lists local server files that have no corresponding server
+	serverids=[] #Initialize array
+	for server in client.servers: 
+		serverids.append(server.id) #Append server ids to array
+	print(serverids)
+	print(os.listdir('settings'))
+	for file in os.listdir('settings'):
+		if not file.split(".")[0] in serverids:
+			print(client.user.name + " has been removed from " + file.split(".")[0] + ", or the server no longer exists. ")
+	print("")
+	############################
 	print("Account: "+client.user.name)
 	print("Account ID: "+client.user.id)
 	print("Bot Account: "+str(client.user.bot))
 	print("||||||||| ONLINE |||||||||")
 	await client.change_presence(game=discord.Game(name="Use .info for help."))
-#
+
 @client.event
 async def on_message(message):
-	if not client.user.id == message.author.id:
+	if client.user.id != message.author.id and not message.author.bot:
+		with open('users.json','r+') as userfile:
+			users = json.loads(userfile.read())
+			if not message.author.id in users.keys():
+				users[str(message.author.id)] = {"xp":0,"level":1}
+			
+			#Add xp to a user's file based off of message length and a modifier
+			users[str(message.author.id)]["xp"] = int(users[str(message.author.id)]["xp"]) + math.floor(len(message.content)/8) + 10
+			if int(users[str(message.author.id)]["xp"])>int(users[str(message.author.id)]["level"])*1000:
+				print(message.author.name + " just leveled up!")
+				users[str(message.author.id)]["level"] = int(users[str(message.author.id)]["level"]) + 1
+				users[str(message.author.id)]["xp"] = 0
+
+				embed = discord.Embed(title="Level Up!", description=str(message.author.display_name) + " is now level " + str(users[str(message.author.id)]["level"]) + "!", color=0xbc42f4)
+				if message.author.avatar_url:
+					embed.set_thumbnail(url=message.author.avatar_url)
+				await client.send_message(message.channel, embed=embed)
+			userfile.seek(0)
+			userfile.truncate(0) #erases file before dumping the new json. Shouldn't have to do this but we're here arn't we
+			json.dump(users, userfile, indent=4)
+
 		if not os.path.isfile(os.path.join('settings',str(message.server.id+'.json'))):
 			shutil.copy2('settings.json', os.path.join('settings',str(message.server.id+'.json')))
 			print("created "+str(os.path.join('settings',str(message.server.id+'.json'))))
+
 		with open(os.path.join('settings',str(message.server.id+'.json')),'r') as serversettings:
 			settings = json.loads(serversettings.read())
 			prefix = str(settings["bot"]["prefix"])
@@ -215,9 +278,16 @@ async def on_message(message):
 					print(txtout)
 					await client.send_message(message.channel,txtout)
 
+			#.level#
+			elif message.content.lower().startswith(prefix+settings["commands"]["level"]["command"]) and settings["commands"]["level"]["enabled"]==True:
+				txtout = "Level " + str(users[str(message.author.id)]["level"]) + "\n" + str(users[str(message.author.id)]["xp"]) + " xp"
+				embed = discord.Embed(title=str(message.author.display_name), description=txtout, color=0x42b3f4)
+				if message.author.avatar_url:
+					embed.set_thumbnail(url=message.author.avatar_url)
+				await client.send_message(message.channel, embed=embed)
+
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
-				
 				#check if the quotes file exists for the server, if not, create a file with an empty json object#
 				if not os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')), 'a') as f:
@@ -427,6 +497,7 @@ async def on_message(message):
 				embed.set_image(url="https://cdn.discordapp.com/attachments/260061122193784833/404628539728723969/chrome_2018-01-07_20-25-17.jpg")
 				print("Pee Stream")
 				await client.send_message(message.channel,embed=embed)
+			txtout = ""
 with open("bottoken_topsecret.txt","r") as bottoken:
 	client.run(str(bottoken.read()))
 client.close()

@@ -15,6 +15,10 @@
       "command": "settings",
       "enabled": true
     },
+    "level": {
+      "command": "level",
+      "enabled": true
+    },
     "addquote": {
       "command": "addquote",
       "enabled": true
