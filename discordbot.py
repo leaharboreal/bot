@@ -69,24 +69,22 @@ async def on_message(message):
 		with open('users.json','r+') as userfile:
 			users = json.loads(userfile.read())
 			if not message.author.id in users.keys():
-				users[str(message.author.id)] = {}
-				users[str(message.author.id)]["xp"] = 0
-				users[str(message.author.id)]["level"] = 1
+				users[str(message.author.id)] = {"xp":0,"level":1}
 			
 			#Add xp to a user's file based off of message length and a modifier
-			users[str(message.author.id)]["xp"] = int(users[str(message.author.id)]["xp"]) + math.floor(len(message.content)/4) + 10
-			
-			if users[str(message.author.id)]["xp"]>int(users[str(message.author.id)]["level"])*100:
+			users[str(message.author.id)]["xp"] = int(users[str(message.author.id)]["xp"]) + math.floor(len(message.content)/8) + 10
+			if int(users[str(message.author.id)]["xp"])>int(users[str(message.author.id)]["level"])*100:
 				print(message.author.name + " just leveled up!")
 				users[str(message.author.id)]["level"] = int(users[str(message.author.id)]["level"]) + 1
 				users[str(message.author.id)]["xp"] = 0
+
 				embed = discord.Embed(title="Level Up!", description=str(message.author.display_name) + " is now level " + str(users[str(message.author.id)]["level"]) + "!", color=0xbc42f4)
 				if message.author.avatar_url:
 					embed.set_thumbnail(url=message.author.avatar_url)
 				await client.send_message(message.channel, embed=embed)
 			userfile.seek(0)
+			userfile.truncate(0) #erases file before dumping the new json. Shouldn't have to do this but we're here arn't we
 			json.dump(users, userfile, indent=4)
-			
 
 		if not os.path.isfile(os.path.join('settings',str(message.server.id+'.json'))):
 			shutil.copy2('settings.json', os.path.join('settings',str(message.server.id+'.json')))
