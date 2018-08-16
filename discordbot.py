@@ -39,30 +39,57 @@ sid = SentimentIntensityAnalyzer()
 xkcd37 = re.compile(r"(\w)-ass (\w)", re.MULTILINE)
 xkcd37sub = "\\1 ass-\\2"
 
+#Make some nice room in the command line
+print("")
+
+#Pre-boot settings update
+print("|| Updating settings... ")
+with open('settings.json','r') as settingsfile:
+	master = json.loads(settingsfile.read())
+	for file in os.listdir("settings"):
+		with open(os.path.join("settings",file),'r+') as serverfile:
+			changed=False
+			serversettings = json.loads(serverfile.read())
+			for command in master['commands'].keys():
+				if not command in serversettings['commands'].keys():
+					serversettings['commands'][command] = master['commands'][command]
+					changed = True
+					print("| Command " + command + " added to " + file)
+			if changed:
+				serverfile.seek(0)# reset file position to the beginning.
+				json.dump(serversettings, serverfile, indent=4)
+				serverfile.truncate()
+			serverfile.close()
+	settingsfile.close()
+print("|| Settings up to date. ")
+
+#Create the users file if it doesn't exist
+if not os.path.isfile('users.json'):
+		with open('users.json','w') as userfile:
+			userfile.write("{\n}")
+			print("Created users.json")
+
+
+
 @client.event
 async def on_ready():
-	print("Account: "+client.user.name)
-	print("Account ID: "+client.user.id)
-	print("Bot Account: "+str(client.user.bot))
-	print("||||||||| ONLINE |||||||||")
-	await client.change_presence(game=discord.Game(name="Use .info for help."))
-	
-	if not os.path.isfile('users.json'):
-			with open('users.json','w') as userfile:
-				userfile.write("{\n}")
-
 	#Lists local server files that have no corresponding server
-	serverids=[]
-	for server in client.servers:
-		serverids.append(server.id)
+	serverids=[] #Initialize array
+	for server in client.servers: 
+		serverids.append(server.id) #Append server ids to array
 	print(serverids)
 	print(os.listdir('settings'))
 	for file in os.listdir('settings'):
 		if not file.split(".")[0] in serverids:
 			print(client.user.name + " has been removed from " + file.split(".")[0] + ", or the server no longer exists. ")
-			#print("To remove this warning, remove the file from the servers directory. ")
-	print("||||||||| READY |||||||||")
-#
+	print("")
+	############################
+	print("Account: "+client.user.name)
+	print("Account ID: "+client.user.id)
+	print("Bot Account: "+str(client.user.bot))
+	print("||||||||| ONLINE |||||||||")
+	await client.change_presence(game=discord.Game(name="Use .info for help."))
+
 @client.event
 async def on_message(message):
 	if client.user.id != message.author.id and not message.author.bot:
@@ -252,6 +279,14 @@ async def on_message(message):
 					#log output in console then send as discord message#
 					print(txtout)
 					await client.send_message(message.channel,txtout)
+
+			#.level#
+			elif message.content.lower().startswith(prefix+settings["commands"]["level"]["command"]) and settings["commands"]["level"]["enabled"]==True:
+				txtout = "Level " + str(users[str(message.author.id)]["level"]) + "\n" + str(users[str(message.author.id)]["xp"]) + " xp"
+				embed = discord.Embed(title=str(message.author.display_name), description=txtout, color=0x42b3f4)
+				if message.author.avatar_url:
+					embed.set_thumbnail(url=message.author.avatar_url)
+				await client.send_message(message.channel, embed=embed)
 
 			#.addquote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
@@ -465,6 +500,7 @@ async def on_message(message):
 				embed.set_image(url="https://cdn.discordapp.com/attachments/260061122193784833/404628539728723969/chrome_2018-01-07_20-25-17.jpg")
 				print("Pee Stream")
 				await client.send_message(message.channel,embed=embed)
+			txtout = ""
 with open("bottoken_topsecret.txt","r") as bottoken:
 	client.run(str(bottoken.read()))
 client.close()
