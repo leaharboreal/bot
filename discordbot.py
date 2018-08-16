@@ -73,7 +73,7 @@ async def on_message(message):
 			
 			#Add xp to a user's file based off of message length and a modifier
 			users[str(message.author.id)]["xp"] = int(users[str(message.author.id)]["xp"]) + math.floor(len(message.content)/8) + 10
-			if int(users[str(message.author.id)]["xp"])>int(users[str(message.author.id)]["level"])*100:
+			if int(users[str(message.author.id)]["xp"])>int(users[str(message.author.id)]["level"])*1000:
 				print(message.author.name + " just leveled up!")
 				users[str(message.author.id)]["level"] = int(users[str(message.author.id)]["level"]) + 1
 				users[str(message.author.id)]["xp"] = 0
