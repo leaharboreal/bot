@@ -300,17 +300,17 @@ async def on_message(message):
 					#set quotemessage to the message object before the user's command#
 					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
 						quotemessage = message
-					quote = base64.b64encode(message.content)
+					quote = base64.b64encode(str(quotemessage.content).encode('utf-8')).decode('utf-8')
 					
 					#ensure quote does not contain any illegal symbols#
 				
 					if quotemessage.author.id in quotes: #if the user already has a quote object then append quote#
 						quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
-						quotes[str(quotemessage.author.id)][quoteid] = str(quote)
+						quotes[str(quotemessage.author.id)][quoteid] = quote
 					else: #if they don't have a quote object, create one with their 1st quote#
 						quoteid = 1
 						quotes[quotemessage.author.id]={}
-						quotes[quotemessage.author.id][quoteid] = str(quote)
+						quotes[quotemessage.author.id][quoteid] = quote
 					
 					print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content)) #add log of changes#
 					await client.send_message(message.channel,":white_check_mark: Added quote: `"+str(quotemessage.content)+"`") #confirm addition of quote#
@@ -328,12 +328,12 @@ async def on_message(message):
 						if message.mentions:
 							if message.mentions[0].id in quotes.keys():
 								quoteauthor = message.mentions[0].id
-								txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))]))+"```"+message.mentions[0].mention
+								txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])).decode('utf-8')+"```"+message.mentions[0].mention
 							else:
 								txtout="Oops! "+message.mentions[0].mention+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
 						else:
 							quoteauthor = random.choice(list(quotes.keys()))
-							txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))]))+"```"+message.mentions[0].mention
+							txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])).decode('utf-8')+"```"+message.mentions[0].mention
 				else:
 					txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote` to add quotes."
 				print(txtout)
