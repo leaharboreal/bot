@@ -22,6 +22,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import urllib.request
 import json 
 import shutil
+import base64
 
 #Set working directory to file's location
 abspath = os.path.abspath(__file__)
@@ -299,42 +300,40 @@ async def on_message(message):
 					#set quotemessage to the message object before the user's command#
 					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
 						quotemessage = message
+					quote = base64.b64encode(message.content)
 					
 					#ensure quote does not contain any illegal symbols#
-					if re.match(r"^[\w\d~!@#$%^&+=;:, ./?\*\-]+$",quotemessage.content.lower()):
-						if quotemessage.author.id in quotes: #if the user already has a quote object then append quote#
-							quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
-							quotes[str(quotemessage.author.id)][quoteid] = str(quotemessage.content)
-						else: #if they don't have a quote object, create one with their 1st quote#
-							quoteid = 1
-							quotes[quotemessage.author.id]={}
-							quotes[quotemessage.author.id][quoteid] = str(quotemessage.content)
-						
-						print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content)) #add log of changes#
-						await client.send_message(message.channel,":white_check_mark: Added quote: `"+str(quotemessage.content)+"`") #confirm addition of quote#
-						
-						#seek to start of file before dumping the new json object in the file#
-						f.seek(0)
-						json.dump(quotes, f, indent=4)
-						f.close() #close the file since we are done with it#
-					else: #tell user that the quote contains invalid characters#
-						await client.send_message(message.channel,":negative_squared_cross_mark: Quote contains invalid characters.")
-						f.close() #close the file since we are done with it#
+				
+					if quotemessage.author.id in quotes: #if the user already has a quote object then append quote#
+						quoteid = int(max(quotes[quotemessage.author.id].keys()))+1
+						quotes[str(quotemessage.author.id)][quoteid] = str(quote)
+					else: #if they don't have a quote object, create one with their 1st quote#
+						quoteid = 1
+						quotes[quotemessage.author.id]={}
+						quotes[quotemessage.author.id][quoteid] = str(quote)
+					
+					print("Added Quote to file "+message.server.id+".json: "+str(quotemessage.content)) #add log of changes#
+					await client.send_message(message.channel,":white_check_mark: Added quote: `"+str(quotemessage.content)+"`") #confirm addition of quote#
+					
+					#seek to start of file before dumping the new json object in the file#
+					f.seek(0)
+					json.dump(quotes, f, indent=4)
+					f.close() #close the file since we are done with it#
 			
 			#.quote#
 			elif message.content.lower().startswith(prefix+settings["commands"]["quote"]["command"]) and settings["commands"]["quote"]["enabled"]==True:
 				if os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')),'r') as f:
 						quotes = json.loads(f.read())
-						if len(message.content.split(" "))>=2:
-							if str(re.match(r".+(\d{18}).+",message.content).group(1)) in quotes.keys():
-								quoteauthor = str(re.match(r".+(\d{18}).+",message.content).group(1))
-								txtout="```"+str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])+"``` -<@!"+str(quoteauthor)+">"
+						if message.mentions:
+							if message.mentions[0].id in quotes.keys():
+								quoteauthor = message.mentions[0].id
+								txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))]))+"```"+message.mentions[0].mention
 							else:
-								txtout="Oops! "+message.content.split(" ")[1]+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
+								txtout="Oops! "+message.mentions[0].mention+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
 						else:
 							quoteauthor = random.choice(list(quotes.keys()))
-							txtout="```"+str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))])+"``` -<@!"+str(quoteauthor)+">"
+							txtout="```"+base64.b64decode(str(quotes[quoteauthor][random.choice(list(quotes[quoteauthor].keys()))]))+"```"+message.mentions[0].mention
 				else:
 					txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote` to add quotes."
 				print(txtout)
