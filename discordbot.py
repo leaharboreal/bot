@@ -298,8 +298,7 @@ async def on_message(message):
 					quotes = json.loads(f.read()) #initialize json file as python object#
 					
 					#set quotemessage to the message object before the user's command#
-					async for message in client.logs_from(message.channel,limit=1,before=message.timestamp,reverse=False):
-						quotemessage = message
+					quotemessage = await getQuote(message)
 					quote = base64.b64encode(str(quotemessage.content).encode('utf-8')).decode('utf-8')
 					
 					#ensure quote does not contain any illegal symbols#
@@ -497,6 +496,16 @@ async def on_message(message):
 				print("Pee Stream")
 				await client.send_message(message.channel,embed=embed)
 			txtout = ""
+
+#Gather messages for quote
+async def getQuote(inmessage):
+	async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False):
+		if inmessage.mentions:
+			if message.author == inmessage.mentions[0]:
+				return message
+		else:
+			return message
+
 with open("bottoken_topsecret.txt","r") as bottoken:
 	client.run(str(bottoken.read()))
 client.close()
