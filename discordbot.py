@@ -332,7 +332,7 @@ async def on_message(message):
 							else:
 								txtout="Oops! "+message.mentions[0].mention+" hasn't been quoted on this server yet.\nUse `"+prefix+"addquote` when they say something great."
 						else:
-							quoteauthor = await get_user_info(random.choice(list(quotes.keys())))
+							quoteauthor = await client.get_user_info(random.choice(list(quotes.keys())))
 							txtout="```"+base64.b64decode(str(quotes[quoteauthor.id][random.choice(list(quotes[quoteauthor.id].keys()))])).decode('utf-8')+"```"+quoteauthor.mention
 				else:
 					txtout="Oops! No quotes available for this server!\nUse `"+prefix+"addquote` to add quotes."
