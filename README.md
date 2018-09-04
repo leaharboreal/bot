@@ -13,8 +13,9 @@ discord bot written in py
 6. Invite your bot to a server with your OAuth link that can be generated on the discord website.
 
 ### Invite bot to your server
-Unfortunately this is not currently viable as bot is still very much a work in progress, although it is a future goal to make the bot public. 
-If you *really* want, contact [@ShiftyWizard#4823 or @arboreal#4200](http://discord.gg/YKbEgNp "Click to join Arboreal's Discord Server") and we may be able to figure something out. 
+To invite bot to a server that you manage, click [here](https://discordapp.com/oauth2/authorize?client_id=426669660549677056&scope=bot "Invite bot") and follow the prompts. Bot is a project just for fun, and therefor may not be running 24/7. The bot may be taken down at any time without warning. If you have a problem with this you can host bot yourself using the instructions above. I'm not a lawyer or anything but _**please don't**_ misuse bot for anything:  
+a) illegal  
+b) objectionable/questionable  
 
 ## Dependencies
 ---
@@ -29,7 +30,9 @@ If you *really* want, contact [@ShiftyWizard#4823 or @arboreal#4200](http://disc
 Command | Syntax | Usage
 ---|---|---
 `.test`|`.test`|Test if bot can see and reply to commands. Replies with "🤖" (`:robot:`).
-`.addquote`|`.addquote <@user>\|<quote>`|Adds a 'quote' to the server's quote.txt in `\quotes\`
+`.settings`|`.settings <bot> prefix <value>` or `.settings <commands> <command> <command\|enabled> <value>`|Sets command settings server wide. Must have minimum of server manager privlages to use. 
+`.level`|`.level`|Check your current level and experience. 
+`.addquote`|`.addquote`|Adds the message above as a 'quote' to the server's quote.txt in `\quotes\`
 `.quote`|`.quote [@user]`|Picks a random quote from the server's quote file. If a user is specified, returns the a random quote from that author.
 `@someone`|any message containing `@someone`|Picks a random user from the server and mentions them. Meant to emulate discord's 2018 april fools joke. 
 Dadbot|`I'm <message>`|Replies to user with the side splittingly hilarious 'Hi, \<so and so>, I'm Dad'. No, I will not remove this feature. 
@@ -44,3 +47,6 @@ Auto XKCD-37|any message containing `something-ass something`|Automatically perf
 `.dog`|`.dog`|Returns a random dog image using the dog.ceo api.
 `.catfact`|`.catfact`|Returns a random cat fact using a catfacts api.
 `bot`|any message containing `bot`|Uses sentiment analysis to respond to comments about bot. Yes, it is overkill. 
+
+## Contact
+Something isn't working? Create a github issue and explain your problem. 
