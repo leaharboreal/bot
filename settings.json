@@ -15,6 +15,10 @@
       "command": "settings",
       "enabled": true
     },
+    "purge": {
+      "command": "purge",
+      "enabled": true
+    },
     "level": {
       "command": "level",
       "enabled": true

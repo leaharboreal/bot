@@ -122,7 +122,7 @@ async def on_message(message):
 			global txtout
 
 			#.test#
-			if message.content.lower().startswith(prefix+settings["commands"]["test"]["command"]) and settings["commands"]["test"]["enabled"]==True:
+			if await checkCommand(settings,"test",message):
 				print(':robot:')
 				await client.send_message(message.channel, ':robot:')
 			
@@ -278,6 +278,21 @@ async def on_message(message):
 					#log output in console then send as discord message#
 					print(txtout)
 					await client.send_message(message.channel,txtout)
+
+			#.purge
+			elif await checkCommand(settings,"purge",message) and message.server.me.permissions_in(message.channel).manage_messages:
+				if message.author.server_permissions.manage_messages and message.author.server_permissions.manage_server:
+					if len(message.content.lower().split(" ")) == 2:
+						limit = int(message.content.lower().split(" ")[1])
+						if limit <= 100:
+							if await client.purge_from(message.channel,limit=limit):
+								await client.send_message(message.channel, ":warning: Deleted "+str(limit)+" messages.")
+						else: 
+							await client.send_message(message.channel, "100 messages max!")
+					else:
+						await client.send_message(message.channel, "Please specify the number of messages!")
+				else:
+					await client.send_message(message.channel, "You need at least manage messages and manage server permissions to do that!")
 
 			#.level#
 			elif message.content.lower().startswith(prefix+settings["commands"]["level"]["command"]) and settings["commands"]["level"]["enabled"]==True:
@@ -497,6 +512,20 @@ async def on_message(message):
 				await client.send_message(message.channel,embed=embed)
 			txtout = ""
 
+#Check if command should run
+async def checkCommand(settings,commandName,message,atStart=True):
+	prefix = str(settings["bot"]["prefix"])
+	if atStart:
+		if message.content.lower().startswith(prefix+settings["commands"][commandName]["command"]) and settings["commands"][commandName]["enabled"]==True:
+			return True
+		else:
+			return False
+	else:
+		if settings["commands"][commandName]["command"] in message.content.lower() and settings["commands"][commandName]["enabled"]==True:
+			return True
+		else:
+			return False
+
 #Gather messages for quote
 async def getQuote(inmessage):
 	async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False):
@@ -505,6 +534,10 @@ async def getQuote(inmessage):
 				return message
 		else:
 			return message
+
+#Check if message is positive, negative or neutral
+async def sentiment(inmessage):
+	return sid.polarity_scores(inmessage.content)
 
 with open("bottoken_topsecret.txt","r") as bottoken:
 	client.run(str(bottoken.read()))
