@@ -127,7 +127,7 @@ async def on_message(message):
 				await client.send_message(message.channel, ':robot:')
 			
 			#.info#
-			elif message.content.lower().startswith(prefix+settings["commands"]["info"]["command"]) and settings["commands"]["info"]["enabled"]==True:
+			elif await checkCommand(settings,"info",message):
 				print('BOT INFO')
 				embed = discord.Embed(title="BOT INFO", description="Made by @ShiftyWizard#4823 & @Arboreal#4200 for fun.", url="https://github.com/leaharboreal/bot", color=0x1abc9c)
 				embed.set_thumbnail(url="https://raw.githubusercontent.com/leaharboreal/bot/master/profilepic.png")
@@ -295,7 +295,7 @@ async def on_message(message):
 					await client.send_message(message.channel, "You need at least manage messages and manage server permissions to do that!")
 
 			#.level#
-			elif message.content.lower().startswith(prefix+settings["commands"]["level"]["command"]) and settings["commands"]["level"]["enabled"]==True:
+			elif await checkCommand(settings,"level",message):
 				txtout = "Level " + str(users[str(message.author.id)]["level"]) + "\n" + str(users[str(message.author.id)]["xp"]) + " xp"
 				embed = discord.Embed(title=str(message.author.display_name), description=txtout, color=0x42b3f4)
 				if message.author.avatar_url:
@@ -303,7 +303,7 @@ async def on_message(message):
 				await client.send_message(message.channel, embed=embed)
 
 			#.addquote#
-			elif message.content.lower().startswith(prefix+settings["commands"]["addquote"]["command"]) and settings["commands"]["addquote"]["enabled"]==True:
+			elif await checkCommand(settings,"addquote",message):
 				#check if the quotes file exists for the server, if not, create a file with an empty json object#
 				if not os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')), 'a') as f:
@@ -335,7 +335,7 @@ async def on_message(message):
 					f.close() #close the file since we are done with it#
 			
 			#.quote#
-			elif message.content.lower().startswith(prefix+settings["commands"]["quote"]["command"]) and settings["commands"]["quote"]["enabled"]==True:
+			elif await checkCommand(settings,"quote",message):
 				if os.path.isfile(os.path.join('quotes',str(message.server.id+'.json'))):
 					with open(os.path.join('quotes',str(message.server.id+'.json')),'r') as f:
 						quotes = json.loads(f.read())
@@ -354,7 +354,7 @@ async def on_message(message):
 				await client.send_message(message.channel,txtout)
 
 			#@SOMEONE#
-			elif settings["commands"]["@someone"]["command"] in message.content.lower().split(" ") and settings["commands"]["addquote"]["enabled"]==True:
+			elif await checkCommand(settings,"@someone",message,atStart=False):
 				x = message.server.members
 				members = []
 				for member in x:
@@ -366,7 +366,7 @@ async def on_message(message):
 				await client.send_message(message.channel,txtout)
 
 			#RETURN STRING WITH SPACES EVERY CHARACTER#
-			elif message.content.lower().startswith(prefix+settings["commands"]["widespace"]["command"]) and settings["commands"]["widespace"]["enabled"]==True:
+			elif await checkCommand(settings,"widespace",message):
 				txtout = ""
 				x = ""
 				for char in message.content[len(prefix+settings["commands"]["widespace"]["command"]):]:
@@ -379,7 +379,7 @@ async def on_message(message):
 				await client.send_message(message.channel,txtout)
 
 			#VERBOSE MESSAGE GENERATOR#
-			elif message.content.lower().startswith(prefix+settings["commands"]["verbose"]["command"]) and settings["commands"]["verbose"]["enabled"]==True:
+			elif await checkCommand(settings,"verbose",message):
 				txtin = message.content[len(prefix+settings["commands"]["verbose"]["command"]):]
 				txtout = ""
 				synonyms = []
@@ -398,7 +398,7 @@ async def on_message(message):
 				await client.send_message(message.channel,txtout)
 
 			#SUCCINCT MESSAGE GENERATOR#
-			elif message.content.lower().startswith(prefix+settings["commands"]["succinct"]["command"]) and settings["commands"]["succinct"]["enabled"]==True:
+			elif await checkCommand(settings,"succinct",message):
 				txtin = message.content[len(prefix+settings["commands"]["succinct"]["command"]):]
 				txtout = ""
 				synonyms = []
@@ -417,7 +417,7 @@ async def on_message(message):
 				await client.send_message(message.channel,txtout)
 
 			#SMUSH TWO WORDS TOGETHER#
-			elif message.content.lower().startswith(prefix+settings["commands"]["smush"]["command"]) and settings["commands"]["smush"]["enabled"]==True:
+			elif await checkCommand(settings,"smush",message):
 				worda = message.content.split(" ")[1]
 				wordb = message.content.split(" ")[2]
 				asyl = hyphenate_word(worda)
@@ -430,7 +430,7 @@ async def on_message(message):
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
-			elif message.content.lower().startswith(prefix+settings["commands"]["dog"]["command"]) and settings["commands"]["dog"]["enabled"]==True:
+			elif await checkCommand(settings,"dog",message):
 				with urllib.request.urlopen("https://dog.ceo/api/breeds/image/random") as url:
 					data = json.loads(url.read().decode())
 					embed = discord.Embed(color=0xeee657)
@@ -438,7 +438,7 @@ async def on_message(message):
 					print(data["message"])
 					await client.send_message(message.channel,embed=embed)
 
-			elif message.content.lower().startswith(prefix+settings["commands"]["catfact"]["command"]) and settings["commands"]["catfact"]["enabled"]==True:
+			elif await checkCommand(settings,"catfact",message):
 				with urllib.request.urlopen("https://cat-fact.herokuapp.com/facts/random") as url:
 					data = json.loads(url.read().decode())
 					txtout=data["text"]
@@ -446,25 +446,25 @@ async def on_message(message):
 					await client.send_message(message.channel,txtout)
 
 			#CHOOSE FROM USER SPECIFIED LIST#
-			elif message.content.lower().startswith(prefix+settings["commands"]["choose"]["command"]) and settings["commands"]["choose"]["enabled"]==True:
+			elif await checkCommand(settings,"choose",message):
 				items=message.content[len(prefix+settings["commands"]["choose"]["command"]):]
 				txtout=random.choice(items.split("|"))
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
 			#"RATE" SOMETHING BY PICKING A NUMBER FROM 1 TO 10#
-			elif message.content.lower().startswith(prefix+settings["commands"]["rate"]["command"]) and settings["commands"]["rate"]["enabled"]==True:
+			elif await checkCommand(settings,"rate",message):
 				txtout="I\'d rate " + str(message.content[len(prefix+settings["commands"]["rate"]["command"]):]) + " **" + str(random.randrange(10)) + " out of 10!**"
 				print(txtout)
 				await client.send_message(message.channel,txtout)
 
 			#FLIP A COIN#
-			elif message.content.lower().startswith(prefix+settings["commands"]["flip"]["command"]) and settings["commands"]["flip"]["enabled"]==True:
+			elif await checkCommand(settings,"flip",message):
 				embed = discord.Embed(title="Flip", description=random.choice(['Heads','Tails']), color=0xeee657)
 				await client.send_message(message.channel, embed=embed)
 			
 			#PRINT EMOTES#
-			elif message.content.lower().startswith(prefix+settings["commands"]["emotes"]["command"]) and settings["commands"]["emotes"]["enabled"]==True:
+			elif await checkCommand(settings,"emotes",message):
 				txtout=""
 				with open('emotes.txt','r') as file:
 					lines=list(file)
