@@ -365,6 +365,39 @@ async def on_message(message):
 				txtout = "<@"+someone+">"+" was randomly mentioned with @someone!"
 				await client.send_message(message.channel,txtout)
 
+			#Colour
+			elif await checkCommand(settings,"colour",message,atStart=False):
+				colour = message.content.lower().split(" ")[1]
+				if re.match(r"(^#[\d,a-f]{6}$|^#[\d,a-f]{3}$)",colour):
+					colourType = "hex"
+					colour = colour[1:]
+				elif re.match(r"rgb\((25[0-5]|2[0-4]\d|[0,1]\d\d|\d{1,2}),(25[0-5]|2[0-4]\d|[0,1]\d\d|\d{1,2}),(25[0-5]|2[0-4]\d|[0,1]\d\d|\d{1,2})\)",colour):
+					colourType = "rgb"
+				elif re.match(r"hsl\((25[0-5]|2[0-4]\d|[0,1]\d\d|\d{1,2}),(100|\d{1,2})%,(100|\d{1,2})%\)",colour):
+					colourType = "hsl"
+				elif re.match(r"cmyk\((100|\d{1,2}),(100|\d{1,2}),(100|\d{1,2}),(100|\d{1,2})\)",colour):
+					colourType = "cmyk"
+				else:
+					colourType = None
+				if colourType:
+					print("http://thecolorapi.com/id?"+colourType+"="+colour)
+					with urllib.request.urlopen("http://thecolorapi.com/id?"+colourType+"="+colour) as url:
+						data = json.loads(url.read().decode())
+						colourHEX = data["hex"]["value"]
+						colourRGB = data["rgb"]["value"]
+						colourHSL = data["hsl"]["value"]
+						colourCMYK = data["cmyk"]["value"]
+						embed = discord.Embed(title=data["name"]["value"], colour=discord.Colour(int(data["hex"]["value"][1:],16)))
+						embed.add_field(name="Hex", value=colourHEX, inline=True)
+						embed.add_field(name="RGB", value=colourRGB, inline=True)
+						embed.add_field(name="HSL", value=colourHSL, inline=True)
+						embed.add_field(name="CMYK", value=colourCMYK, inline=True)
+						#embed.set_thumbnail(url=data["image"]["bare"])
+						embed.set_footer(text="Sourced using thecolorapi")
+						await client.send_message(message.channel, embed=embed)
+				else:
+					await client.send_message(message.channel,"Format not recognised :(")
+
 			#RETURN STRING WITH SPACES EVERY CHARACTER#
 			elif await checkCommand(settings,"widespace",message):
 				txtout = ""

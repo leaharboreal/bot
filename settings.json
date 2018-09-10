@@ -35,6 +35,10 @@
       "command": "@someone",
       "enabled": true
     },
+    "colour": {
+      "command": "colour",
+      "enabled": true
+    },
     "dadbot": {
       "enabled": true
     },
