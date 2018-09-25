@@ -23,6 +23,7 @@ import urllib.request
 import json 
 import shutil
 import base64
+import difflib
 
 #Set working directory to file's location
 abspath = os.path.abspath(__file__)
@@ -561,12 +562,30 @@ async def checkCommand(settings,commandName,message,atStart=True):
 
 #Gather messages for quote
 async def getQuote(inmessage):
-	async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False):
-		if inmessage.mentions:
+	if inmessage.mentions:
+		async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False):
 			if message.author == inmessage.mentions[0]:
 				return message
-		else:
+	elif len(inmessage.content.split(" "))>1:
+		return await getFuzz(inmessage)
+	else:
+		async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False,limit=2):
 			return message
+
+async def fuzz(stringA,stringB):
+	return float(difflib.SequenceMatcher(None, stringA, stringB).ratio())
+
+async def getFuzz(inmessage):
+	messages = []
+	similarity = []
+	content = " ".join(inmessage.content.split(" ")[1:])
+	async for message in client.logs_from(inmessage.channel,before=inmessage.timestamp,reverse=False):
+		messages.append(message)
+		similarity.append(await fuzz(content,message.content))
+	if max(similarity) >= .68:
+		return messages[similarity.index(max(similarity))]
+	else:
+		return None
 
 #Check if message is positive, negative or neutral
 async def sentiment(inmessage):
